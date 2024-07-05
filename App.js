@@ -6,19 +6,44 @@ import AddPlace from "./screens/AddPlace";
 import IconButton from "./components/UI/IconButton";
 import { Colors } from "./constants/colors";
 import Map from "./screens/Map";
+import { useEffect, useState } from "react";
+import { init } from "./util/database";
+// import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
 
 const Stack = createNativeStackNavigator();
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
+  const [dbInitialized, setDbInitialized] = useState(false);
+
+  useEffect(() => {
+    init()
+      .then(() => {
+        setDbInitialized(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  if (!dbInitialized) {
+    // return <AppLoading />;
+    SplashScreen.hideAsync();
+  }
+
   return (
     <>
       <StatusBar style="dark" />
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{
-          headerStyle: {backgroundColor: Colors.primary500},
-          headerTintColor: Colors.black,
-          contentStyle: {backgroundColor: Colors.gray700}
-        }}>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: Colors.primary500 },
+            headerTintColor: Colors.black,
+            contentStyle: { backgroundColor: Colors.gray700 },
+          }}
+        >
           <Stack.Screen
             name="AllPlaces"
             component={AllPlaces}
