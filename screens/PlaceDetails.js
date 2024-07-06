@@ -7,7 +7,12 @@ import { fetchPlaceDetails } from "../util/database";
 function PlaceDetails({ route, navigation }) {
   const [fetchedPlace, setFetchedPlace] = useState();
 
-  function showOnMapHandler() {}
+  function showOnMapHandler() {
+    navigation.navigate("Map", {
+      initialLat: fetchedPlace.location.lat,
+      initialLng: fetchedPlace.location.lng,
+    });
+  }
 
   const selectedPlaceId = route.params.placeId;
 
@@ -68,7 +73,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   address: {
-    color: Colors.primary500,
+    color: Colors.white,
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 16,
