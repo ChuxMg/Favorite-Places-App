@@ -47,10 +47,10 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     fontSize: 18,
-    color: Colors.white,
+    color: Colors.primary50,
   },
   address: {
     fontSize: 12,
-    color: Colors.white,
+    color: Colors.primary50,
   },
 });

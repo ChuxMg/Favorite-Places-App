@@ -2,10 +2,13 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import OutlinedButton from "../components/UI/OutlinedButton";
 import { Colors } from "../constants/colors";
 import { useEffect, useState } from "react";
-import { fetchPlaceDetails } from "../util/database";
+import { deletePlace, fetchPlaceDetails } from "../util/database";
+import ActionButton from "../components/UI/ActionButton";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
 
 function PlaceDetails({ route, navigation }) {
   const [fetchedPlace, setFetchedPlace] = useState();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   function showOnMapHandler() {
     navigation.navigate("Map", {
@@ -37,24 +40,50 @@ function PlaceDetails({ route, navigation }) {
     );
   }
 
-  return (
-    <ScrollView>
-      <Image style={styles.image} source={{ uri: fetchedPlace.imageUri }} />
-      <View style={styles.locationContainer}>
-        <View style={styles.addressContainer}>
-          <Text style={styles.address}>{fetchedPlace.address}</Text>
+
+  function deletePlaceHandler() {
+    setIsDeleting(true);
+    deletePlace(selectedPlaceId);
+    setIsDeleting(false);
+
+    navigation.goBack();
+  };
+
+  if (isDeleting) {
+    return <LoadingOverlay />
+  };
+
+
+    return (
+      <ScrollView style={styles.container}>
+        <Image style={styles.image} source={{ uri: fetchedPlace.imageUri }} />
+        <View style={styles.locationContainer}>
+          <View style={styles.addressContainer}>
+            <Text style={styles.address}>{fetchedPlace.address}</Text>
+          </View>
+          <View style={styles.buttonActions}>
+            <View style={styles.button}>
+              <OutlinedButton icon="map" onPress={showOnMapHandler}>
+                View on Map
+              </OutlinedButton>
+            </View>
+            <View style={styles.button}>
+              <ActionButton icon="trash" onPress={deletePlaceHandler}>
+                Delete Place
+              </ActionButton>
+            </View>
+          </View>
         </View>
-        <OutlinedButton icon="map" onPress={showOnMapHandler}>
-          View on Map
-        </OutlinedButton>
-      </View>
-    </ScrollView>
-  );
+      </ScrollView>
+    );
 }
 
 export default PlaceDetails;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   fallback: {
     flex: 1,
     justifyContent: "center",
@@ -73,9 +102,17 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   address: {
-    color: Colors.white,
+    color: Colors.primary200,
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  buttonActions: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  button: {
+    paddingHorizontal: 20,
   },
 });

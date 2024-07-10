@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.primary100,
+    backgroundColor: Colors.primary200,
     borderRadius: 4,
     overflow: "hidden",
   },

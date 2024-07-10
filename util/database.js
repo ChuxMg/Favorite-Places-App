@@ -117,6 +117,26 @@ export function fetchPlaceDetails(id) {
   return promise;
 }
 
+export function deletePlace(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "DELETE FROM places WHERE id = ?",
+        [id],
+        (_, result) => {
+          const place = result.rows._array[0];
+          resolve(place);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+
 // const database = await SQLite.openDatabaseAsync("places.db");
 
 // export function init() {

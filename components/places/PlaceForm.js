@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "bold",
     marginBottom: 4,
-    color: Colors.primary500,
+    color: Colors.primary100,
   },
   input: {
     marginVertical: 8,
@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderBottomColor: Colors.primary700,
     borderBottomWidth: 2,
-    backgroundColor: Colors.primary100,
+    backgroundColor: Colors.primary200,
   },
 });
