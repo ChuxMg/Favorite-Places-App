@@ -11,6 +11,7 @@ import { init } from "./util/database";
 // import AppLoading from "expo-app-loading";
 import * as SplashScreen from "expo-splash-screen";
 import PlaceDetails from "./screens/PlaceDetails";
+import DeletePlace from "./screens/DeletePlace";
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +66,7 @@ export default function App() {
             component={AddPlace}
             options={{
               title: "Add a new Place",
+              // presentation: "modal",
             }}
           />
           <Stack.Screen name="Map" component={Map} />
@@ -73,6 +75,15 @@ export default function App() {
             component={PlaceDetails}
             options={{
               title: "Loading Place...",
+              // presentation: "modal",
+            }}
+          />
+          <Stack.Screen
+            name="DeletePlace"
+            component={DeletePlace}
+            options={{
+              title: "Delete Confirmation",
+              presentation: "modal",
             }}
           />
         </Stack.Navigator>

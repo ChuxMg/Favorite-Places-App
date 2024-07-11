@@ -2,13 +2,10 @@ import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import OutlinedButton from "../components/UI/OutlinedButton";
 import { Colors } from "../constants/colors";
 import { useEffect, useState } from "react";
-import { deletePlace, fetchPlaceDetails } from "../util/database";
-import ActionButton from "../components/UI/ActionButton";
-import LoadingOverlay from "../components/UI/LoadingOverlay";
+import { fetchPlaceDetails } from "../util/database";
 
 function PlaceDetails({ route, navigation }) {
   const [fetchedPlace, setFetchedPlace] = useState();
-  const [isDeleting, setIsDeleting] = useState(false);
 
   function showOnMapHandler() {
     navigation.navigate("Map", {
@@ -40,42 +37,44 @@ function PlaceDetails({ route, navigation }) {
     );
   }
 
+  function onDeletePlaceHandler(id) {
+    id = selectedPlaceId;
+    navigation.navigate("DeletePlace", {
+      placeId: id,
+    });
+  }
 
-  function deletePlaceHandler() {
-    setIsDeleting(true);
-    deletePlace(selectedPlaceId);
-    setIsDeleting(false);
-
-    navigation.goBack();
-  };
-
-  if (isDeleting) {
-    return <LoadingOverlay />
-  };
-
-
-    return (
-      <ScrollView style={styles.container}>
-        <Image style={styles.image} source={{ uri: fetchedPlace.imageUri }} />
-        <View style={styles.locationContainer}>
-          <View style={styles.addressContainer}>
-            <Text style={styles.address}>{fetchedPlace.address}</Text>
+  return (
+    <ScrollView style={styles.container}>
+      <Image style={styles.image} source={{ uri: fetchedPlace.imageUri }} />
+      <View style={styles.locationContainer}>
+        <View style={styles.addressContainer}>
+          <Text style={styles.address}>{fetchedPlace.address}</Text>
+        </View>
+        <View style={styles.buttonActions}>
+          <View style={styles.button}>
+            <OutlinedButton
+              icon="map"
+              color={Colors.primary100}
+              onPress={showOnMapHandler}
+            >
+              View on Map
+            </OutlinedButton>
           </View>
-          <View style={styles.buttonActions}>
-            <View style={styles.button}>
-              <OutlinedButton icon="map" onPress={showOnMapHandler}>
-                View on Map
-              </OutlinedButton>
-            </View>
-            <View style={styles.button}>
-              <ActionButton icon="trash" onPress={deletePlaceHandler}>
-                Delete Place
-              </ActionButton>
-            </View>
+          <View style={styles.button}>
+            <OutlinedButton
+              icon="trash"
+              color={Colors.error}
+              mode="delete"
+              onPress={onDeletePlaceHandler}
+            >
+              Delete Place
+            </OutlinedButton>
           </View>
         </View>
-      </ScrollView>
-    );
+      </View>
+    </ScrollView>
+  );
 }
 
 export default PlaceDetails;
