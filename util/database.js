@@ -3,8 +3,6 @@
 import * as SQLite from "expo-sqlite";
 import { Place } from "../models/place";
 
-// const database = SQLite.openDatabaseAsync("places.db");
-
 let database;
 
 async function initializeDatabase() {
@@ -16,7 +14,7 @@ async function initializeDatabase() {
 export async function init() {
   await initializeDatabase();
   await database.withTransactionAsync(async (tx) => {
-    await tx.executeSql(
+    await tx.executeSqlAsync(
       `CREATE TABLE IF NOT EXISTS places (
         id INTEGER PRIMARY KEY NOT NULL,
         title TEXT NOT NULL,
@@ -32,7 +30,7 @@ export async function init() {
 export async function insertPlace(place) {
   await initializeDatabase();
   const result = await database.withTransactionAsync(async (tx) => {
-    return await tx.executeSql(
+    return await tx.executeSqlAsync(
       `INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?);`,
       [
         place.title,
@@ -50,7 +48,7 @@ export async function insertPlace(place) {
 export async function fetchPlaces() {
   await initializeDatabase();
   const result = await database.withTransactionAsync(async (tx) => {
-    return await tx.executeSql("SELECT * FROM places");
+    return await tx.executeSqlAsync("SELECT * FROM places");
   });
 
   const places = [];
@@ -65,7 +63,7 @@ export async function fetchPlaces() {
           dp.title,
           dp.imageUri,
           {
-            address: dp.address,
+            address: dp.address || "Address not available",
             lat: dp.lat,
             lng: dp.lng,
           },
@@ -81,7 +79,7 @@ export async function fetchPlaces() {
 export async function fetchPlaceDetails(id) {
   await initializeDatabase();
   const result = await database.withTransactionAsync(async (tx) => {
-    return await tx.executeSql("SELECT * FROM places WHERE id = ?", [id]);
+    return await tx.executeSqlAsync("SELECT * FROM places WHERE id = ?", [id]);
   });
 
   if (result.rows && result.rows.length > 0) {
@@ -91,7 +89,12 @@ export async function fetchPlaceDetails(id) {
       return new Place(
         dbPlace.title,
         dbPlace.imageUri,
-        { lat: dbPlace.lat, lng: dbPlace.lng, address: dbPlace.address },
+        {
+          lat: dbPlace.lat,
+          lng: dbPlace.lng,
+          address: dbPlace.address || "Address not available",
+        },
+
         dbPlace.id
       );
     }
@@ -103,7 +106,7 @@ export async function fetchPlaceDetails(id) {
 export async function deletePlace(id) {
   await initializeDatabase();
   const result = await database.withTransactionAsync(async (tx) => {
-    return await tx.executeSql("DELETE FROM places WHERE id = ?", [id]);
+    return await tx.executeSqlAsync("DELETE FROM places WHERE id = ?", [id]);
   });
 
   return result;
